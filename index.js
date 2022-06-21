@@ -1,22 +1,28 @@
 var express = require("express");
+var bodyParser = require("body-parser");
 var multer = require("multer");
+var upload = multer();
 var app = express();
+
+app.get("/", function (req, res) {
+  res.render("form");
+});
 
 app.set("view engine", "pug");
 app.set("views", "./views");
-app.use(express.static("public"));
+
 // for parsing application/json
-app.use(express.json());
-app.get("/", function (req, res, next) {
-  res.render("form");
-});
+app.use(bodyParser.json());
+
 // for parsing application/xwww-
-// app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
 
 // for parsing multipart/form-data
+app.use(upload.array());
+app.use(express.static("public"));
 
-app.post("/", multer().none(), function (req, res) {
+app.post("/", function (req, res) {
   console.log(req.body);
   res.send("received your request!");
 });
