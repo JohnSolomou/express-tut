@@ -3,24 +3,34 @@ var bodyParser = require("body-parser");
 var multer = require("multer");
 var upload = multer();
 var app = express();
+let path = require("path");
 
 app.get("/", function (req, res) {
-  res.render("form");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
-
+app.get("/jobapplication", (req, res) => {
+  let sFirstName = req.query.empFirst;
+  let sLastName = req.query.empLast;
+  console.log(req.query);
+  res.send("hello from job app");
+});
+app.post("/jobapplication", (req, res) => {
+  console.log(req);
+  res.send("hello from job app");
+});
 app.set("view engine", "pug");
 app.set("views", "./views");
 
 // for parsing application/json
-app.use(bodyParser.json());
 
 // for parsing application/xwww-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 //form-urlencoded
 
 // for parsing multipart/form-data
-app.use(upload.array());
-app.use(express.static("public"));
+
+//whenever a static file is requested look in public folder
+app.use(express.static(__dirname + "/public"));
 
 app.post("/", function (req, res) {
   console.log(req.body);
